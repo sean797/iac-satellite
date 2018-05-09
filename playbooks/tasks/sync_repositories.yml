@@ -1,0 +1,42 @@
+---
+- name: Get repos
+  foreman_search_facts:
+    server_url: "{{ configure_katello_server_url }}"
+    username: "{{ configure_katello_username }}"
+    password: "{{ configure_katello_password }}"
+    verify_ssl: "{{ configure_katello_verify_ssl }}"
+    resource: Repository
+  register: repos
+  delegate_to: localhost
+  vars:
+    ansible_python_interpreter: "{{ configure_katello_virtualenv }}/bin/python"
+
+- name: Sync repos
+  katello_sync:
+    server_url: "{{ configure_katello_server_url }}"
+    username: "{{ configure_katello_username }}"
+    password: "{{ configure_katello_password }}"
+    verify_ssl: "{{ configure_katello_verify_ssl }}"
+    product: "{{ item.product.name }}"
+    repository:  "{{ item.name }}"
+    organization: "{{ configure_katello_organizations[0].name }}"
+  delegate_to: localhost
+  vars:
+    ansible_python_interpreter: "{{ configure_katello_virtualenv }}/bin/python"
+  loop: "{{ repos.resources }}"
+  when: item.url
+  async: 999999
+  poll: 0
+  register: sync_sleeper
+
+- name: check sync status
+  async_status:
+    jid: "{{ sync_sleeper_item.ansible_job_id }}"
+  loop: "{{ sync_sleeper.results }}"
+  loop_control:
+    loop_var: sync_sleeper_item
+  when: sync_sleeper_item.ansible_job_id is defined
+  register: async_job_result
+  until: async_job_result.finished
+  retries: 999
+  delay: 10

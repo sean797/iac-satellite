@@ -1,0 +1,4 @@
+---
+ca_certificates_trusted:
+  - name: sat-hub
+    remote_pem: "http://{{ hostvars[groups['sat-hub'][0]]['ansible_fqdn'] }}/pub/katello-server-ca.crt"

@@ -1,0 +1,3 @@
+---
+virtualenv_path: "{{ ansible_env['HOME'] }}/nailgin-venv"
+virtualenv_post_packages: git+https://github.com/SatelliteQE/nailgun.git@6.4.z#egg=nailgun

@@ -1,0 +1,3 @@
+satellite_patches:
+  - { src: files/repository_sets_api.patch, basedir: /opt/theforeman/tfm/root/usr/share/gems/gems/katello-3.7.0.42/ }
+  - { src: files/repository_sets_api_product_required.patch, basedir: /opt/theforeman/tfm/root/usr/share/gems/gems/katello-3.7.0.42/ }

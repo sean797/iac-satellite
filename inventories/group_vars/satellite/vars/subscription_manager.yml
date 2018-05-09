@@ -1,0 +1,2 @@
+---
+subscription_manager_enabled_repos: rhel-7-server-rpms,rhel-server-rhscl-7-rpms,rhel-7-server-satellite-6.4-rpms,rhel-7-server-satellite-maintenance-6-rpms,rhel-7-server-ansible-2.6-rpms

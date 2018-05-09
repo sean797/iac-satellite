@@ -1,0 +1,5 @@
+---
+proxy_hostname: proxy.example.com
+proxy_password: "{{ vault_proxy_password }}"
+proxy_port: 8080
+proxy_user: bar

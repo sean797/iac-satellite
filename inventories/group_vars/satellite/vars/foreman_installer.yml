@@ -1,0 +1,3 @@
+---
+foreman_installer_pkg: satellite
+foreman_installer_scenario: satellite

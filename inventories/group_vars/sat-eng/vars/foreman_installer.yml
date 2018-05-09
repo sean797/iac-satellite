@@ -1,0 +1,14 @@
+---
+foreman_installer_scenarios_answers:
+  foreman:
+    admin_password: "{{ vault_satellite_admin_password | default('changeme') }}"
+    initial_organization: MY_ORG
+    initial_location: MY_ORG
+  puppet:
+    server_jvm_extra_args: -XX:MaxPermSize=256m -Djava.io.tmpdir=/var/puppet_tmp
+    runmode: none
+  katello:
+    proxy_url: "http://{{ proxy_hostname }}"
+    proxy_password: "{{ proxy_password }}"
+    proxy_port: "{{ proxy_port }}"
+    proxy_username: "{{ proxy_user }}"

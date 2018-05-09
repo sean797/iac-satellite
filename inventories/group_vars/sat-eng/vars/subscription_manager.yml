@@ -1,0 +1,12 @@
+---
+subscription_manager:
+  user: foo
+  password: "{{ vault_rhsm_password }}"
+  proxy_hostname: "{{ proxy_hostname }}"
+  proxy_password: "{{ proxy_password }}"
+  proxy_port: "{{ proxy_port }}"
+  proxy_user: "{{ proxy_user }}"
+
+
+subscription_manager_pool_id:
+  - 8a85f997659005fa0165ae85785634f2

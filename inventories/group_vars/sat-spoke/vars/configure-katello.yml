@@ -1,0 +1,6 @@
+---
+configure_katello_organizations:
+  - name: MY_ORG
+    state: present
+    manifest: "{{ configure_katello_manifest_name }}"
+    redhat_repository_url: "https://{{ hostvars[groups['sat-hub'][0]]['ansible_fqdn'] }}/pub"

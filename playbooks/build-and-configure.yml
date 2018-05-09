@@ -1,0 +1,144 @@
+---
+- name: Gather facts
+  hosts: all
+  gather_facts: True
+
+- name: Create Virtual Env for Nailgun
+  hosts: localhost
+  roles:
+    - role: cchurch.virtualenv
+      environment: "{{ environment_vars }}"
+  tags:
+    - setup
+
+- name: Build Engineering Satellite
+  hosts: sat-eng
+  become: True
+  roles:
+    - role: sean797.subscription_manager
+    - role: sean797.foreman_installer
+  tasks:
+    - name: instal patches
+      patch:
+        src: "{{ item.src }}"
+        basedir: "{{ item.basedir }}"
+        strip: "{{ item.strip | default(1) }}"
+      with_items: "{{ satellite_patches }}"
+      when: satellite_patches is defined
+      notify: restart apache
+  handlers:
+    - name: restart apache
+      service:
+        name: httpd
+        state: restarted
+  tags:
+    - eng
+
+- name: Configure Engineering Satellite
+  hosts: sat-eng
+  become: False
+  roles:
+    - role: sean797.configure-katello
+      delegate_to: localhost
+      ansible_python_interpreter: "{{ configure_katello_virtualenv }}/bin/python"
+  tasks:
+    - name: Create symlink for direct sync
+      file:
+        state: link
+        path: /var/www/html/pub/content
+        src: "/var/lib/pulp/published/yum/https/repos/{{ configure_katello_organizations[0]['name'] }}/Library/content"
+      become: True
+  tags:
+    - eng
+    - configure
+
+- name: Hub should Trust Eng Satellite
+  hosts: sat-hub
+  become: True
+  roles:
+    - role: bdellegrazie.ca-certificates
+  tags:
+    - hub
+
+- name: Build Hub Satellite
+  hosts: sat-hub
+  become: True
+  roles:
+    - role: sean797.subscription_manager
+    - role: sean797.foreman_installer
+  tasks:
+    - name: instal patches
+      patch:
+        src: "{{ item.src }}"
+        basedir: "{{ item.basedir }}"
+        strip: "{{ item.strip | default(1) }}"
+      with_items: "{{ satellite_patches }}"
+      when: satellite_patches is defined
+      notify: restart apache
+  handlers:
+    - name: restart apache
+      service:
+        name: httpd
+        state: restarted
+  tags:
+    - hub
+
+- name: Configure Hub Satellite
+  hosts: sat-hub
+  become: False
+  roles:
+    - role: sean797.configure-katello
+      delegate_to: localhost
+      ansible_python_interpreter: "{{ configure_katello_virtualenv }}/bin/python"
+  tasks:
+    - name: Create symlink for direct sync
+      file:
+        state: link
+        path: /var/www/html/pub/content
+        src: "/var/lib/pulp/published/yum/https/repos/{{ configure_katello_organizations[0]['name'] }}/Library/content"
+      become: True
+  tags:
+    - hub
+    - configure
+
+- name: Spokes should Trust Hub Satellite
+  hosts: sat-spoke
+  become: True
+  roles:
+    - role: bdellegrazie.ca-certificates
+  tags:
+    - spoke
+
+- name: Build Spoke Satellites
+  hosts: sat-spoke
+  become: True
+  roles:
+    - role: sean797.subscription_manager
+    - role: sean797.foreman_installer
+  tasks:
+    - name: instal patches
+      patch:
+        src: "{{ item.src }}"
+        basedir: "{{ item.basedir }}"
+        strip: "{{ item.strip | default(1) }}"
+      with_items: "{{ satellite_patches }}"
+      when: satellite_patches is defined
+      notify: restart apache
+  handlers:
+    - name: restart apache
+      service:
+        name: httpd
+        state: restarted
+  tags:
+    - spoke
+
+- name: Configure Spoke Satellites
+  hosts: sat-spoke
+  become: False
+  roles:
+    - role: sean797.configure-katello
+      delegate_to: localhost
+      ansible_python_interpreter: "{{ configure_katello_virtualenv }}/bin/python"
+  tags:
+    - spoke
+    - configure

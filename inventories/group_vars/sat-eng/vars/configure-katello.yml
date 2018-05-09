@@ -1,0 +1,25 @@
+---
+configure_katello_organizations:
+  - name: MY_ORG
+    state: present
+    manifest: "{{ configure_katello_manifest_name }}"
+
+configure_katello_activation_keys:
+  - name: Satellite
+    organization: MY_ORG
+    environment: Library
+    content_view: Default Organization View 
+    subscriptions:
+      - name: Red Hat Enterprise Linux, Premium (One Year, Enterprise Program)
+      - name: Red Hat Satellite, Premium (One Year, Enterprise Program)
+    auto_attach: False
+
+configure_katello_settings:
+  - { name: default_download_policy, value: immediate }
+
+configure_katello_domains:
+  - name: "{{ hostvars[groups['sat-hub'][0]]['ansible_domain'] }}"
+    organizations:
+      - MY_ORG
+    locations:
+      - MY_ORG

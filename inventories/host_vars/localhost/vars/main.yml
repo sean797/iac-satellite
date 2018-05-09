@@ -1,0 +1,5 @@
+---
+environment_vars:
+  http_proxy: "http://{{ proxy_user }}:{{ proxy_password }}@{{ proxy_hostname }}:{{ proxy_port }}"
+  https_proxy: "http://{{ proxy_user }}:{{ proxy_password }}@{{ proxy_hostname }}:{{ proxy_port }}"
+  no_proxy: ".example.com localhost"

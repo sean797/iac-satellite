@@ -1,0 +1,26 @@
+---
+- name: Gather facts
+  hosts: all
+  gather_facts: True
+
+- name: Create Virtual Env for Nailgun
+  hosts: localhost
+  roles:
+    - role: cchurch.virtualenv
+      environment: "{{ environment_vars }}"
+  tags:
+    - setup
+
+- name: Sync Repos
+  hosts: satellite
+  become: False
+  serial: 1
+  pre_tasks:
+    - name: sync existing repositories
+      include_tasks: tasks/sync_repositories.yml
+  roles:
+    - role: sean797.configure-katello
+      delegate_to: localhost
+      ansible_python_interpreter: "{{ configure_katello_virtualenv }}/bin/python"
+  tags:
+    - content

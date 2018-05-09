@@ -1,0 +1,4 @@
+---
+subscription_manager_satellite_url: "https://{{ hostvars[groups['sat-eng'][0]]['ansible_fqdn'] }}"
+subscription_manager_activation_key: Satellite
+subscription_manager_org_id: MY_ORG

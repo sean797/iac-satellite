@@ -1,0 +1,4 @@
+*.retry
+*.swp
+.vagrant
+.vault-pass

@@ -1,0 +1,98 @@
+---
+configure_katello_virtualenv: "{{ ansible_env['HOME'] }}/nailgin-venv"
+configure_katello_install_deps: False
+configure_katello_username: admin
+configure_katello_password: "{{ vault_satellite_admin_password | default('changeme') }}"
+configure_katello_server_url: "https://{{ ansible_fqdn }}"
+configure_katello_host: "{{ ansible_fqdn }}"
+configure_katello_port: 443
+configure_katello_verify_ssl: false
+
+configure_katello_proxy: "http://{{ proxy_hostname }}:{{ proxy_port }}"
+configure_katello_proxy_username: "{{ proxy_user }}"
+configure_katello_proxy_password:  "{{ proxy_password }}"
+
+configure_katello_manifest_name: sat6-poc
+configure_katello_subscriptions:
+ - { pool_id: 8a85f98b61a2e2b90161dc3e5e0b717c, state: present, quantity: 9 }
+ - { pool_id: 8a85f98b61a2e2b90161dc3e77457187, state: present, quantity: 9 }
+
+configure_rhsm_username: sean.o-keeffe@example.com
+configure_rhsm_password: "{{ vault_rhsm_password }}" 
+configure_rhsm_verify_ssl: false
+
+configure_katello_repository_sets:
+  - name: Red Hat Enterprise Linux 7 Server (RPMs)
+    repo_name: Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server
+    organization: MY_ORG
+    product: Red Hat Enterprise Linux Server
+    state: enabled
+    repositories:
+      - releasever: 7Server
+        basearch: x86_64
+  - name: Red Hat Satellite Tools 6.4 (for RHEL 7 Server) (RPMs)
+    repo_name: Red Hat Satellite Tools 6.4 for RHEL 7 Server RPMs x86_64
+    organization: MY_ORG
+    product: Red Hat Enterprise Linux Server
+    state: enabled
+    repositories:
+      - basearch: x86_64
+  - name: Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server
+    repo_name:  Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server x86_64 7Server
+    organization: MY_ORG
+    product: Red Hat Software Collections (for RHEL Server)
+    state: enabled
+    repositories:
+      - releasever: 7Server
+        basearch: x86_64
+  - name: Red Hat Satellite 6.4 (for RHEL 7 Server) (RPMs)
+    repo_name: Red Hat Satellite 6.4 for RHEL 7 Server RPMs x86_64
+    organization: MY_ORG
+    product: Red Hat Satellite
+    state: enabled
+    repositories:
+      - basearch: x86_64
+  - name: Red Hat Satellite Maintenance 6 (for RHEL 7 Server) (RPMs)
+    repo_name: Red Hat Satellite Maintenance 6 for RHEL 7 Server RPMs x86_64
+    organization: MY_ORG
+    product: Red Hat Enterprise Linux Server
+    state: enabled
+    repositories:
+      - basearch: x86_64
+  - name: Red Hat Ansible Engine 2.6 RPMs for Red Hat Enterprise Linux 7 Server
+    repo_name: Red Hat Ansible Engine 2.6 RPMs for Red Hat Enterprise Linux 7 Server x86_64
+    organization: MY_ORG
+    product: Red Hat Ansible Engine
+    state: enabled
+    repositories:
+      - basearch: x86_64
+
+configure_katello_lifecycle_environment:
+  - name: Engineering
+    organization: MY_ORG
+    prior: Library
+    state: present
+  - name: RC
+    organization: MY_ORG
+    prior: Engineering
+    state: present
+  - name: Production
+    organization: MY_ORG
+    prior: RC
+    state: present
+
+configure_katello_content_views:
+  - name: Base OS
+    organization: MY_ORG
+    repositories:
+      - name: Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server
+        product: Red Hat Enterprise Linux Server
+      - name: Red Hat Satellite Tools 6.4 for RHEL 7 Server RPMs x86_64
+        product: Red Hat Enterprise Linux Server
+
+configure_katello_content_view_versions:
+  - content_view: Base OS
+    organization: MY_ORG
+    version: 1.0
+    lifecycle_environments:
+      - Library

@@ -1,0 +1,15 @@
+[satellite]
+eng-satellite.example.com
+hub-satellite.example.com
+spoke1-satellite.example.com
+
+[sat-eng]
+eng-satellite.example.com
+
+[sat-hub]
+hub-satellite.example.com
+
+[sat-spoke]
+spoke1-satellite.example.com
+spoke2-satellite.example.com
+spoke3-satellite.example.com

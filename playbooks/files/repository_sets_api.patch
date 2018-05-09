@@ -1,0 +1,24 @@
+From 8c463a3259be0761664b45f9e5d865b159906f01 Mon Sep 17 00:00:00 2001
+From: Sean O'Keeffe <seanokeeffe797@gmail.com>
+Date: Fri, 10 Aug 2018 11:02:50 +0100
+Subject: [PATCH] Fixes #24580 - docuement /repository_sets/ API
+
+This commit also makes /repository_sets and
+/products/:product_id/repository_sets in feature
+parity by added an available_repositories route.
+---
+ config/routes/api/v2.rb                                     | 1 +
+ 1 files changed, 1 insertions(+)
+
+diff --git a/config/routes/api/v2.rb b/config/routes/api/v2.rb
+index 217086933d..9089c640da 100644
+--- a/config/routes/api/v2.rb
++++ b/config/routes/api/v2.rb
+@@ -282,6 +282,7 @@ class ActionDispatch::Routing::Mapper
+         api_resources :repository_sets, :only => [:index, :show] do
+           get :auto_complete_search, :on => :collection
+           member do
++            get :available_repositories
+             put :enable
+             put :disable
+           end
